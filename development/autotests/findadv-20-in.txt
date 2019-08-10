@@ -1,0 +1,34 @@
+# Avoiding recursive replacements when replaced text matches search pattern
+# Addresses #7675.
+#
+Lang it_IT.utf8
+
+CO: findadv-20.1.ctrl
+TestBegin test.lyx -dbg key,find > findadv-20.loga.txt 2>&1
+CN: Part 1
+KK: a a a\C\[Home]
+KK: \CF
+KK: a\[Tab]
+KK: \Cm\\frac 1\[Down]a\[Return]\[Return]\[Return]
+KK: \Cs
+KK: \Axbuffer-export latex\[Return]
+CR: \$\\frac\{1\}\{a\}\$ \$\\frac\{1\}\{a\}\$ a
+CC:
+TestEnd
+
+Lang it_IT.utf8
+CO: findadv-20.2.ctrl
+TestBegin test2.lyx -dbg key,find > findadv-20.logb.txt 2>&1
+CN: Part 2
+KK: \Cma  \Cma  \Cma \C\[Home]
+KK: \CF
+KK: a\[Tab]
+KK: \Cm\\frac 1\[Down]a\[Return]\[Return]\[Return]
+KK: \Cs
+KK: \Axbuffer-export latex\[Return]
+CR: ^\$\\frac\{1\}\{a\}\$ \$\\frac\{1\}\{a\}\$ \$a\$
+CC:
+TestEnd
+Lang C
+Assert searchPatterns.pl log=test.tex patterns=findadv-20.1.ctrl
+Assert searchPatterns.pl log=test2.tex patterns=findadv-20.2.ctrl

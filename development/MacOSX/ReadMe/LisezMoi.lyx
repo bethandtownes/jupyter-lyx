@@ -1,0 +1,178 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass scrartcl
+\use_default_options true
+\maintain_unincluded_children false
+\language french
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "palatino" "default"
+\font_sans "lmss" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures false
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 0
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 0
+\use_package mhchem 1
+\use_package stackrel 0
+\use_package stmaryrd 0
+\use_package undertilde 0
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style swiss
+\papercolumns 1
+\papersides 1
+\paperpagestyle empty
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\use_minted 0
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Installation rapide de \SpecialChar LyX
+ 2.2
+\end_layout
+
+\begin_layout Date
+\begin_inset space \thinspace{}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+thispagestyle{empty}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Pour installer \SpecialChar LyX
+, la marche à suivre est la suivante :
+\end_layout
+
+\begin_layout Enumerate
+Préparation du système
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Si c'est votre première installation de \SpecialChar LyX
+, assurez-vous d'avoir une version
+ récente de Mac\SpecialChar TeX
+ 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://www.tug.org/mactex
+\end_layout
+
+\end_inset
+
+.
+ \SpecialChar LyX
+ s'appuie sur \SpecialChar LaTeX
+ pour composer les documents et ne peut pas produire de documents
+ imprimables sans cela.
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Ouvrez l'image disque de \SpecialChar LyX
+ 2.2 (ce que vous avez probablement déjà fait si
+ vous lisez ceci).
+\end_layout
+
+\begin_layout Enumerate
+Glissez l'icône \SpecialChar LyX
+ dans le dossier Applications.
+\end_layout
+
+\begin_layout Enumerate
+Démarrez \SpecialChar LyX
+.
+\end_layout
+
+\begin_layout Enumerate
+Vous trouverez une liste des nouvelles fonctionnalités de \SpecialChar LyX
+ 2.2 (malheureusement
+ en anglais) à 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://wiki.lyx.org/LyX/NewInLyX22
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\end_body
+\end_document

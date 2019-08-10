@@ -1,0 +1,196 @@
+# -*- org -*-
+Understanding the painting process
+
+This file tries to describe the state of the metrics/painting
+mechanism, and identify the improvements that could be made. The first
+section can be read alone, although the context for them is really
+given in the following ones.
+
+Please keep this file up to date as the code evolves!!!
+
+Abbreviations:
+bv: BufferView
+pm: ParagraphMetrics
+tm::TextMetrics
+
+* Questions / Ideas
+
+These questions are consequences of the description made in the
+following section. Some actions are proposed.
+
+** SinglePar update
+
+This flag only has an effect in the current BufferView, but I think it
+is useful in other views too. Doing this will require some work on the
+update pipeline, though.
+
+** Buffer::change issues
+
+When calling Buffer::changed outside of bv::processUpdateFlags,
+how do we know that the update strategy is set correctly? It is
+possible to reset the strategy at the end of bv::draw. What would be
+a good value? NoScreenUpdate?
+
+On a related note, what is the semantics of a call to
+Buffer::changed(false)? What does the caller mean?
+
+
+** How to avoid redraw with FitCursor when the cursor is already OK?
+
+In this case, we invoke Buffer::change(false) with drawing disabled
+and NoScreenUpdate strategy.
+
+In the draw phase, bv::checkCursorScrollOffset (the horizontal
+scrolling machinery) will change the strategy to FullScreenUpdate if
+the current row needs further scrolling.
+
+When the update strategy it kept to NoScreenUpdate, there is currently
+a no-draw full repaint, which should not be necessary. It would be
+possible to avoid that if the call to checkCursorScrollOffset was done
+in bv::processUpdateFlags instead of bv::draw.
+
+The global idea would be to extend FitCursor to cover also horizontal
+cursor.
+
+
+* Clean-up of drawing code
+
+** Set Row::changed() in a finer way
+
+*** singleParUpdate
+
+When the height of the current paragraph changes, there is no need for
+a full screen update. Only the rows after the current one need to have
+their position recomputed.
+
+This is also true when scrolling (how to do that?)
+
+*** redoParagraph
+
+It should be possible to check whether the new row is the same as the
+old one and keep its changed() status in this case. This would reduce
+a lot the amount of stuff to redraw.
+
+** Put labels and friends in the Row as elements
+
+It should not be necessary to access the Paragraph object to draw.
+Adding the static elements to Row is a lot of work, but worth it IMO.
+
+** Create a unique row by paragraph and break it afterwards
+
+This should be a performance gain (only if paragraph breaking still
+shows as expensive after the rest is done)
+
+** do not add the vertical margin of main text to first/last row
+
+Would make code cleaner. Probably no so difficult.
+
+** When a paragraph ends with a newline, compute correctly the height of the extra row.
+** Merging bv::updateMetrics and tm::metrics
+
+While the full metrics computation tries hard to limit the number of
+paragraphs that are rebroken, the version that is used for inner inset
+does not try any such optimization. This can be very bad for very tall
+insets. We should re-use the bv::updateMetrics logic:
+ + transfer all the logic of bv::updateMetrics to tm.
+ + Main InsetText should not be special.
+
+The difficulty for a tall table cell for example, is that it may be
+necessary to break the whole contents to know the width of the cell.
+
+
+* Description of current drawing mechanism
+
+** Three-stage drawing
+
+There are three parts to drawing the work area:
+
+ + the metrics phase computes the size of insets and breaks the
+   paragraphs into rows. It stores the dimension of insets (both
+   normal and math) in bv::coordCache.
+
+ + the nodraw drawing phase paints the screen (see below) with a null
+   painter. The only useful effect is to store the inset positions.
+
+ + an update() signal is sent. This in turn will trigger a paint
+   event, and the actual screen painting will happen then.
+
+The machinery is controlled via bv::processUpdateFlags. This method is
+called at the end of bv::mouseEventDispatch and in
+GuiApplication::dispatch, via the updateCurrentView method. There are
+also several calls in code related to dialogs. We should evaluate
+whether this is correct.
+
+Depending on the Update::flags passed to the method, it sets an update
+strategy in (NoScreenUpdate, SingleParUpdate, FullScreenUpdate,
+DecorationUpdate). It triggers a recomputation of the metrics when either:
+
+ + Update::Force has been specified
+ + Update::FitCursor has been specified and there is a need to scroll
+   the display.
+ + Update::SinglePar has been specified and the current paragraph has
+   not changed height.
+
+If a computation of metrics has taken place, Force is removed from the
+flags and ForceDraw is added instead.
+
+It is OK to call processUpateFlags several times before an update. In
+this case, the effects are cumulative. processUpdateFlags executes the
+metrics-related actions, but defers the actual drawing to the next
+paint event.
+
+The screen is drawn (with appropriate update strategy), except when
+update flag is Update::None.
+
+
+** Metrics computation (and nodraw drawing phase)
+
+This is triggered by bv::updateMetrics, which calls tm::redoParagraph for
+all visible paragraphs. Some Paragraphs above or below the screen (needed
+for page up/down) and computed as needed.
+
+tm::redoParagraph will call Inset::metrics for each inset. In the case
+of text insets, this will invoke recursively tm::metrics, which redoes
+all the paragraphs of the inset.
+
+At the end of the function, bv::updatePosCache is called. It triggers
+a repaint of the document with a NullPainter (a painter that does
+nothing). This has the effect of caching all insets positions.
+
+** Drawing the work area.
+
+This is done in bv::draw. This method is triggered by a paint event,
+mainly called through Buffer::changed, which draws all the work areas
+that show the given buffer.
+
+Note that, When Buffer::changed is called outside of
+bv::processUpdateFlags, it is not clear whether the update strategy
+has been set to a reasonable value beforehand.
+
+The action depends on the update strategy:
+
+ + NoScreenUpdate: repaint the whole screen with drawing disabled.
+   This is only needed to update the inset positions. I am not sure
+   when this is necessary, actually. This is triggered when:
+   - Update::FitCursor is set but the cursor is already visible. It is
+     not clear why something needs to be done in this case, since this
+     should be equivalent to Update::None.
+   - this is also set when update flag is Update::None, but this value
+     is AFAICS not acted on in the code (meaning that nothing happens
+     at all in this case).
+
+ + FullScreenUpdate: repaint the whole screen. This is set when:
+   - updateMetrics has been invoked.
+   - scroll value of current row has changed (although this should not
+     be necessary).
+
+ + DecorationUpdate: actually like FullScreenUpdate, although it is
+   intended to only update inset decorations. This triggers when:
+   - Update::Decoration is set (without Update::Force) as flag.
+   - An hovered inset is detected.
+
+ + SingleParUpdate: only tries to repaint current paragraph in a way
+   that is not yet very clear to me.
+
+BufferView::draw can also be called with a null painter from
+BufferView::updateMetrics().

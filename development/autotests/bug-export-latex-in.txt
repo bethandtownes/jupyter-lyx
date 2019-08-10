@@ -1,0 +1,17 @@
+# Test export lyx-icon-info 
+# creates lib/images/math-mode.pdf in lyx-source tree, but it should not
+# 
+# 
+
+Lang C
+CO: bug-export-latex.ctrl
+TestBegin -dbg key,files test.lyx > bug-export-latex.loga.txt 2>&1
+KK: \Axinfo-insert icon math-mode\[Return]
+KK: \Axbuffer-export luatex\[Return]
+KK: \[Tab]\[Return]
+KK: \Axbuffer-write\[Return]
+KK: \[Tab]\[Return]
+Cp: support/FileName.cpp .* creating path '/.*/lib/images'
+Cp: support/FileName.cpp .* Checksumming "/.*/lib/images/.*math-mode.pdf" .*lasted 
+TestEnd
+Assert searchPatterns.pl base=bug-export-latex

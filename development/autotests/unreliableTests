@@ -1,0 +1,235 @@
+# Regular expressions for tests that should not be executed with
+# ctest -L export or ctest -L inverted because they do not work as expected
+# (either unreliable or invalid).
+#
+# Patterns will be automatically enclosed with '^' and '$'.
+# Matching tests get the label "unreliable" and do not get the label "export".
+#
+# TODO: Name problem: *invalid* tests (wrong output) are not *unreliable*.
+#   Use "unfit" or "unapplicable" as better label and name of pattern file?
+
+
+Sublabel: nonstandard
+#####################
+# Documents with additional requirements,
+# e.g. a class or package file not in TeXLive.
+# TODO: rename to "extra" or "exotic"?
+
+# aa.cls (not in TeXLive).
+export/examples/Articles/Astronomy_%26_Astrophysics.*
+export/templates/Articles/Astronomy_%26_Astrophysics.*
+
+# AEA.cls (see https://wiki.lyx.org/Examples/AEA)
+export/templates/Articles/American_Economic_Association_.*AEA.*
+
+# copernicus.cls (not in TeXLive)
+# see https://publications.copernicus.org/for_authors/manuscript_preparation.html
+export/templates/Articles/Copernicus_Publications_Manuscript_Preparation_.*
+
+# ectaart.cls
+# see https://wiki.lyx.org/Examples/Econometrica
+export/templates/Articles/Econometrica.*
+
+# iucr.cls (not in TeXLive)
+export/templates/Articles/International_Union_of_Crystallography.*
+
+# ws-ijmpc.cls, w-ijmpd.cls
+# see https://wiki.lyx.org/Examples/IJMP
+export/templates/Articles/Int._Journal_of_Modern_Physics_C.*
+export/templates/Articles/Int._Journal_of_Modern_Physics_D.*
+
+# iopart.cls, iopams.sty, setstack.sty
+# see https://wiki.lyx.org/Layouts/Iopart
+export/templates/Articles/Institute_of_Physics_.*
+
+# jasatex.cls
+# see https://wiki.lyx.org/Layouts/JASATeX
+export/templates/Articles/Journal_of_the_Acoustical_Society_of_America.*
+
+# jss.cls
+export/templates/Articles/Journal_of_Statistical_Software_.*
+
+# LilyPond-book version 2.13 or newer.
+export/examples/(|ja/)Modules/LilyPond_Book_(dvi|pdf|lyx2[23]).*
+
+# maa-monthly.sty (not in TeXLive)
+# http://www.maa.org/sites/default/files/pdf/pubs/maa-monthly.sty
+export/templates/Articles/Mathematical_Monthly.*
+
+# knitr, RJournal.sty (not in TeXLive)
+# incompatible with fontspec?
+export/templates/Articles/R_Journal_.*
+
+# R (http://www.r-project.org)
+# R package knitr (http://yihui.name/knitr)
+export/examples/(|ja/)Modules/Sweave_(dvi|pdf|lyx2[23]).*
+export/examples/(|ja/)Modules/Rnw.*knitr.*_(dvi|pdf|lyx2[23]).*
+
+# obsolete versions of documentclass or style files
+export/templates/Obsolete/.*
+
+# svjour3.cls, svglov2.clo
+# see https://wiki.lyx.org/Examples/Springer
+export/templates/Articles/Springers_Global_Journal_Template.*
+
+# svmono.cls
+export/templates/examples/Books/Springer_Monographs.*
+# svmult.cls
+export/templates/examples/Books/Springer_Contributed_Books.*
+
+
+# TeXLive does not set up Hebrew 8-bit TeX fonts
+# We use the external package "culmus-latex"
+# https://sourceforge.net/projects/ivritex/files/culmus-latex/culmus-latex-0.7/
+# With current "culmus-latex", dvipdfm fails because some of the fonts are
+# type1 *.pfa while dvipdfm only works with *.pfb fonts:
+#   dvipdfmx:warning: Could not locate a virtual/physical font for TFM "david".
+#   dvipdfmx:warning: >> This font is mapped to a physical font "DavidCLM-Medium.pfa".
+#   dvipdfmx:warning: >> Please check if kpathsea library can find this font: DavidCLM-Medium.pfa
+# but: `kpsewhich DavidCLM-Medium.pfa` finds the font!
+# Converting with `t1binary` (from t1utils) helps.
+export/export/latex/unicodesymbols/.*_he.*pdf2
+export/export/latex/(supported-languages|he-scrarticle).*
+export/.*/he/.*((dvi|pdf.?)|_texF)
+export/export/latex/languages/supported-languages_.*_pdf3
+
+
+# Japanese (platex)
+# dvips requires special font setup for kanji.
+# Debian's texlive-lang-japanese does this automatically, tlmgr not.
+# Without proper font setup setup,
+# * the Postscript file has wrong and missing characters
+#   (without error or warning),
+# * as a consequence, `ps2pdf` fails for some documents:
+export/.*/ja/.*_pdf
+
+
+Sublabel: needauth
+##################
+# Tests that require authorisation to call external programs.
+export/examples/External_Material/Gnuplot.*
+export/examples/Graphics_and_Insets/Minted_File_Listing.*
+export/examples/Graphics_and_Insets/Minted_Listings.*
+
+
+Sublabel: erratic
+#################
+# Tests depending on local configuration, or the phase of the moon.
+
+
+Sublabel: varying_versions
+##########################
+# Test depending on e.g. OS or version of a non-TeX-Live dependency.
+# Note that a full, up-to-date TeX Live installation is required so this
+# sublabel is about versions of other dependencies.
+
+# Encoding cp858 only supported by some iconv variants
+# Gnu iconv only supports it, if configured with "--enable-extra-encodings"
+# (see https://www.gnu.org/software/libiconv/)
+export/export/latex/inputenc-cp858_pdf2
+
+# Seminar export with LaTeX fails in latest TeXLive:
+export/examples/(|fr/)seminar_(dvi|pdf).*
+
+# since TL18, Babel-Ukrainean uses UTF-8 if it detects Xe/LuaTeX (for "\date").
+# * garbled output with LuaTeX + TeX fonts (since TL18)
+# * missing chars with XeTeX + TeX fonts (see invertedTests)
+export/export/latex/languages/uk-babel-date-missing-chars-with-ascii_.*_texF
+export/(doc|examples)/uk/(Intro|Welcome)_.*_texF
+
+# new problem with TL18 (see invertedTests)
+export/export/latex/inputenc-luatex-utf8_pdf5_texF
+
+# Compilation errors under TeXLive-19 with XeTeX, TeX-fonts, inputenc utf8,
+# and expl3.sty (TL 17 works).
+export/export/latex/inputenc-xetex-utf8-expl3-bug_pdf4_texF
+
+# Error with LuaTeX for Japanese documents using graphicx.sty with TL17:
+#   ! Package pdftex.def Error: Option `pdftex' requires pdfTeX,
+#   (pdftex.def)                but pdfTeX features are missing.
+export/doc/ja/Tutorial_(dvi3|pdf5)_systemF
+
+# aastex: hard-coded version in class name:
+# 2018-05-12 aastex6.cls -> aastex62.cls
+export/examples/Articles/American_Astronomical_Society_.*
+export/templates/Articles/American_Astronomical_Society_.*
+
+# `acmart` calls "libertine" as default font.
+# With TeXLive < 18, this clashes with LyX setting up 8-bit TeX fonts
+# PDF (luatex) and PDF (xetex) (compilation error or wrong fonts).
+# See also #9744 allow parallel configuration of TeX and non-TeX fonts.
+export/templates/Articles/Association_for_Computing_Machinery_pdf[45]_texF
+
+# Arabic Beamer example fails with TL17
+export/examples/ar/Presentations/Beamer_pdf4_.*
+
+
+Sublabel: wrong_output
+######################
+# Export does not fail but the resulting document has errors.
+#
+# These tests are actually not "unreliable" (different result for different
+# runs) but *invalid* (not measuring what they should measure).
+
+# seminar.sty uses Postscript specials or PGF resulting in problems with slide
+# size and orientation depending on the output format and viewing application.
+# For details see Troubleshooting and the Appendix in examples/seminar.lyx.
+export/examples/(|fr/)Presentations/Seminar_(dvi|pdf).*
+
+# Babel-Spanish uses UTF-8 encoded strings if it detects Xe/LuaTeX.
+# With "language default" (=="latin9"), Babel strings  come out wrong
+# when compiling with Xe/LuaTeX and TeX-fonts.
+export/export/latex/es_auto-legacy_texF
+
+# since TL18, Babel-Ukrainean uses UTF-8 if it detects Xe/LuaTeX (for "\date").
+# * garbled output with LuaTeX + TeX fonts (since TL18)
+#   (date and chapter headings)
+# * missing chars with XeTeX + TeX fonts (see invertedTests)
+export/export/latex/languages/uk-babel-date-missing-chars-with-ascii_.*_texF
+export/doc/uk/Intro_.*_texF
+
+
+# LyX issues
+# **********
+
+#6197: „amssymb” with Polish babel: name clash \lll ("<<<" vs. "ł")
+# Wrong output with pdflatex
+# missing character with XeTeX/LuaTeX and Babel (-> invertedTests)
+export/export/latex/6197-polish-amssymb_(dvi|pdf).?
+
+# The following document mixes inTitle layouts and leads to
+# likely unintended output. See #10347
+export/export/mixing_inTitle_layouts_(pdf|dvi).*
+
+# Characters with accents are not output
+# Reported to LuaTeX mailing list here:
+# https://www.mail-archive.com/search?l=mid&q=20160831134006.4fewxothddqfeyw4%40steph
+# (not expecting much attention because DVI is not given high priority)
+export/doc/es/Customization_dvi3_systemF
+export/examples/(|es/)Curricula_Vitae/Europe_CV_dvi3_.*F
+
+# `acmart` requires PDFlatex:
+# * Missing page number in DVI, Postscript, and PDF (ps2pdf)
+# * "PDF (ps2pdf)" fails (problem with Postscript) in TeXLive < 2018
+#   "Postscript" not tested by ctest autotests
+export/templates/Articles/Association_for_Computing_Machinery_dvi.*
+export/templates/Articles/Association_for_Computing_Machinery_pdf
+
+# lyx2lyx back-conversion of "Date" info-inset writes
+# the name of the day in English instead of Japanese.
+export/examples/ja/Multilingual_Typesetting_.*_lyx.*
+
+# No localization of auto-strings with Chinese language under 8-bit TeX
+# (ctex font issue with texlive-lang-chinese (from Debian) under pdflatex)
+# and only partial localization with non-tex-fonts:
+export/export/latex/CJK/zh_CN-toc.*
+export/doc/zh_CN/(Intro|Tutorial)_(dvi|pdf).?
+
+# Missing Chinese characters in the DVI (LuaTex)
+export/doc/zh_CN/(Intro|Tutorial)_dvi3_systemF
+
+# CJK languages don't change/reset the "language" (which is problematic for
+# documents in a language that uses a non-standard font encoding)
+# In a Greek document, Latin letters in a text part set to "Chinese"
+# come out as Greek letters:
+export/export/latex/CJK/el-zh_CN_utf8-cjk.*

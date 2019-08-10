@@ -1,0 +1,11 @@
+Lang en_US.utf8
+CO: bug-8684.ctrl
+TestBegin -dbg key ../bug-8684.lyx > bug-8684.loga.txt 2>&1
+KK: \Axcommand-sequence change-next; change-reject; change-next\[Return]
+TestEnd
+
+CO: >> bug-8684.ctrl
+TestBegin -dbg key ../bug-8684.lyx >> bug-8684.loga.txt 2>&1
+KK: \Axcommand-sequence char-forward; change-next\[Return]
+TestEnd
+Assert searchPatterns.pl base=bug-8684

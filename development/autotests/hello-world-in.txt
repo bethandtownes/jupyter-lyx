@@ -1,0 +1,94 @@
+# Sample test script for regression tests
+#
+# Adapted from the syntax of the original testkeys.py by McCabe-Dansted.
+# Run this script by providing it as single argument to run-test.sh
+#
+# WARNING: Syntax is poorly parsed: no extra spaces anywhere
+#
+# Lines starting with a '#' on the 1st column are comments
+#
+# Exec <cmd...>
+#   Causes the execution of <cmd...> in a os.system()
+#
+# TestBegin <args...>
+#   Starts a test case under deterministic conditions:
+#   Any currently running instance of LyX is killed
+#   A new LyX instance is spawned, with the command-line arguments
+#   specified in <args...>.
+#
+# TestEndWithKill <cmd...>
+#   Ends a test case, killing immidiately the LyX instance under test
+#   Behaviour is otherwise the same as in 'TestEnd' below
+#
+# TestEnd <cmd...>
+#   Ends a test case, closing the LyX instance under test, and
+#   executing the <cmd...> commands into an os.system(). The exit status
+#   of the commands sequence determines success or failure of the test.
+#   This is equivalent to:
+#     TestEnd
+#     Assert <cmd...>
+#
+# Assert <cmd...>
+#   Executes the <cmd...> commands into an os.system() and, if the
+#   exit status is non-zero, then abort the test execution making it fail.
+#
+# Lang <lang>
+#   Sets the environment variable LANG to <lang>. Useful before launching
+#   LyX (i.e., before a TestBegin command, in order to set deterministically
+#   the language settings, which impacts the actual key sequences needed to
+#   operate within LyX. This way, different developers can write different
+#   test cases in different languages and still they can be executed by
+#   anyone.
+#
+# KK: <chars...>
+#   Feeds the running LyX instance with the specified key characters.
+#   Special sequences:
+#     \A<char> ...... sends the sequence [Alt+<char>]
+#     \[<dir>] ...... sends a cursor movement, <dir> = Right, Left, Up, Down
+#     \[Tab] ........ sends a Tab character
+#     \[Return] ..... sends a Return
+#
+# KD: n
+#   Changes the delay among typed charactes to n milliseconds.
+#
+# CO: [>>] <filename>
+#    Open control file for write (or append if preceeded with '>>').
+#    This file will contain the search and comment strings.
+#    Used only by the script 'searchPatterns.pl' at the end of test
+#
+# CN: <notice>
+#    Write a comment-notice to the control file. Will be output when processed
+#    by 'searchPatterns.pl' script.
+#
+# CP: <pattern>
+#    Write a pattern to the control file. Special characters in this pattern
+#    will be escaped to create a suitable regex.
+#    The result will be applied on the lyx-log-file
+#
+# Cp: <pattern>
+#    It is an error if this pattern matches before the expected (either CP: or CR:)
+#    Expand pattern like in CP:
+#
+# CR: <regex pattern>
+#    Write a pattern to the control file. Pattern will be used directly (no conversion).
+#
+# Cr: <regex pattern>
+#    It is an error if this pattern matches before the expected (either CP: or CR:)
+#
+# CC:
+#    Close the control file. The file is also closed at 'TestEndWithKill' and 'TestEnd'
+#    implicitly.
+#
+# Sleep f
+#   Single delay of f seconds.
+#
+#
+# This example instructs LyX to type "Hello World", then exports it as
+# LaTeX, and verifies that the typed characters are indeed present in the
+# exported document.
+#
+TestBegin test.lyx -dbg key > hello-world.loga.txt 2>&1
+KK: Hello World
+KK: \Cs
+KK: \Axbuffer-export latex\[Return]
+TestEnd grep "Hello World" test.tex

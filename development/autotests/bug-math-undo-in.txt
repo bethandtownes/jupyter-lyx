@@ -1,0 +1,11 @@
+# Test undo of \sqrt in \frac
+# 
+
+Lang C
+CO: bug-math-undo.ctrl
+TestBegin -dbg key test.lyx > bug-math-undo.loga.txt 2>&1
+KK: \Amm\\frac \\sqrt \Cz
+KK: \[Return]
+Cp: SIGSEGV
+TestEnd
+Assert searchPatterns.pl base=bug-math-undo

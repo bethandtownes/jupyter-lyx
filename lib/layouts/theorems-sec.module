@@ -1,0 +1,23 @@
+#\DeclareLyXModule{Standard Theorems (Numbered by Section)}
+#\DeclareCategory{Maths}
+#DescriptionBegin
+#Numbers theorems and the like by section (i.e., the counter is reset at
+#each section start).
+#DescriptionEnd
+#Requires: theorems-std | theorems-ams
+#Excludes: theorems-chap
+
+# Author: Richard Heck <rgheck@comcast.net>
+
+Format 79
+
+Counter theorem
+	Within         section
+End
+
+Style Theorem
+	Preamble
+		\theoremstyle{plain}
+		\newtheorem{thm}{\protect\theoremname}[section]
+	EndPreamble
+End

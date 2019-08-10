@@ -1,0 +1,18 @@
+# Urls probably exist, but to check
+# we need to register and login first
+http://www.issn.org/en/node/344
+http://www.springer.de/author/tex/help-journals.html
+http://www.wkap.nl/jrnllist.htm/JRNLHOME
+http://www.wkap.nl/kaphtml.htm/STYLEFILES
+
+# The download pages probably accessible after login
+http://jasa.peerx-press.org/html/jasa/Using_LaTeX
+http://spie.org/app/Publications/index.cfm?fuseaction=authinfo&type=proceedings
+http://www.jstatsoft.org/downloads/JSSstyle.zip
+http://www.photogrammetry.ethz.ch/tarasp_workshop/isprs.cls
+
+# The following ftp url is correct, but
+# ftp commands like 'dir', 'get' do not work.
+# We get a timeout. Reading with firefox is OK.
+# Read with curl works too, added a flag
+UseCurl ftp://ftp.edpsciences.org/pub/aa/readme.html

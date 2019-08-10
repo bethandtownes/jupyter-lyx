@@ -1,0 +1,331 @@
+# Regular expressions for tests that are known to fail
+#
+# Patterns will be automatically enclosed with '^' and '$'.
+# Matching tests get the label "inverted"
+# or (if also matching a pattern in "suspendedTests") "suspended".
+# They get also the test-property 'WILL_FAIL', i.e.
+# they are reported as failing if the export works without error.
+# https://cmake.org/cmake/help/v3.0/prop_test/WILL_FAIL.html
+
+# ======================================================================
+Sublabel: todo
+# LyX bugs and problems with the sample documents that require attention
+# ======================================================================
+# * minor issues to explore and properly sort,
+# * easyfix issues,
+# * LyX bugs to report at trac (move pattern to section "lyxbugs" once done).
+
+# missing glyphs: There is no ^^A in font [lmroman12-regular]
+# and all the line down to ^^Z and beyond...
+# XeTeX artifact? works with LuaTeX, explore:
+export/doc/(|de/|es/|fr/)EmbeddedObjects_pdf4_systemF
+
+# `acmart` document class:
+# (see also lyxbugs below and ignoredTests)
+# issues with listsof, reported to the maintainer
+# https://www.mail-archive.com/search?l=mid&q=of84gj%24l6b%241%40blaine.gmane.org
+# LyX gives the following terminal message:
+#
+#    TextClass.cpp (1385): The layout does not provide a list command for
+#      the float `sidebar'. LyX will not be able to produce a float list.
+#
+# which makes "check_load" and "lyx2lyx" fail (lyx2lyx for < 2.3 is ignored).
+check_load/templates/Articles/Association_for_Computing_Machinery_.*
+export/templates/Articles/Association_for_Computing_Machinery_.*_lyx23
+
+# Failing LyX2LyX conversions for old versions:
+#
+# "beamer" lyx2lyx fails sometimes for versions < 2.1
+# Back-conversion results in some layouts without name ("\begin_layout \n")
+# which trigger a warning message leading to test failure.
+export/examples/(|de/|fr/|ja/)Presentations/Beamer_lyx(16|20)
+export/examples/Presentations/Beamer_.*Complex.*_lyx(16|20)
+export/templates/(|de/|es/|fr/|ja/)Presentations/Beamer_lyx(16|20)
+#
+# modernCV fails for versions < 2.1
+# * reversed order of \end_layout and \end_inset results in corrupt LyX file
+# * reversed order of command arguments results in incompilable LaTeX
+export/examples/(|es/)Curricula_Vitae/Modern_CV_(lyx(16|20)|dvi|dvi3.*F|pdf|pdf3)
+export/examples/(|es/)Curricula_Vitae/Europe_CV_(dvi|dvi3.*F|pdf|pdf3)
+#
+# Back-conversion fails for rotated float inset in a list:
+export/export/lyx2lyx/lyx_2_3_test_lyx(16|20|21|22)
+# Additional empty lines (vs. Separator latexpar) with every round-trip
+# before an ERT nested in a Description list:
+export/export/lyx2lyx/lyx_2_3_test2_lyx(16|20)
+
+# New problem with TL18: endless loop?
+#    ! TeX capacity exceeded, sorry [input stack +size=5000].
+export/export/latex/luainputenc-utf8_pdf5_texF
+
+# nonstandard tests failing for unknown reason:
+export/templates/Obsolete/ACM_SIGGGRAPH.*_pdf5_(texF|systemF)
+export/templates/Articles/International_Union_of_Crystallography.*_pdf4_systemF
+export/templates/Articles/R_Journal_(dvi3|pdf[45])_systemF
+#export/templates/Articles/Kluwer_.*_systemF
+
+# Thai with CJK package requires the babel option "thaicjk" instead of "thai".
+# (see thaifont.txt in the CJK documentation for setup details).
+export/export/latex/unicodesymbols/031-thai_th_(euc-|gbk|jis|utf8-cjk).*
+
+# Package clashes when Japanese documents are compiled with non-TeX fonts,
+#
+export/doc/ja/(Additional|LaTeXConfig|Math|UserGuide).*_systemF
+export/doc/ja/(Formula-numbering|Customization|EmbeddedObjects|Intro)_pdf4_systemF
+
+# Test for command \pdfsave fails:
+# ! Package xypdf Error: pdfTeX version 1.40.0 or higher is needed for the xypdf
+export/examples/ja/Graphics_and_Insets/XY-Pic.*_systemF
+
+
+# ================================================
+Sublabel: lyxbugs
+# LyX bugs with a Trac number.
+# ================================================
+
+# Dedicated tests in export/latex/lyxbugs start with the ticket number
+# (move to export/latex/lyxbugs-resolved when the problem is fixed).
+# catchall:
+export/export/latex/lyxbugs/[0-9].*
+
+
+#8035 work around a Polyglossia bug:
+# An error is reported if the document font does not announce support for a
+# script (Cyrillic, Greek, ...) which Polyglossia thinks is required to
+# typeset the document language. This is not required with LyX's check for
+# missing glyphs and results in many false positives:
+# a) with fonts including the required characters but
+#    not the tag tested by Polyglossia,
+# b) if the document language is "Serbian (Latin Script)",
+#    the Cyrillic script is not required yet Polyglossia tests for support.
+# The document "sr/Braille.lyx" is an example of case b).
+# (For some reason, the false positive error is not thrown with PDF (luatex).)
+export/examples/sr/Modules/Braille_(dvi3|pdf4)_systemF
+
+#10355 xmllint detects failures
+export/doc/attic/eu_UserGuide_xhtml
+export/doc/(es|ja)/UserGuide_xhtml
+export/examples/External_Material/Spreadsheet_xhtml
+export/export/WrongDfnTagHandling_xhtml
+
+#11455 "Unable to process argument!" with multiple 1.6.x roundtrips
+export/templates/Articles/IEEE_Transactions_Journal_lyx16
+
+#11520 "listerrors" fails with pdflatex, lualatex, and xelatex
+# Example for lib/scripts/listerrors
+# Requires noweb. Seems to be restricted to plain "latex".
+# Find out why and whether the script could be improved.
+export/examples/Modules/Noweb_Listerrors_(pdf[245]).*
+
+#11522 Support specification of complementing non-TeX fonts
+#
+# More than one non-TeX font required for the character set in many documents
+# to prevent "missing glyph" errors with non-TeX fonts
+#
+#export/export/latex/inputenc-.*_systemF # problem remains but test now ignored
+export/doc/(|de/|es/|fr/)Math.*systemF
+# a minimal example for Math.lyx is in
+#export/export/latex/lyxbugs/11522-systemfonts-Math-missingchars.*systemF
+#
+# Farsi: missing glyphs (em space and "English" quotes)
+export/examples/fa/Welcome_pdf4_systemF
+#
+# CJK-quotes examples (missing in most Latin-script fonts)
+export/doc/(|de/|es/|fr/)UserGuide_(dvi3|pdf4|pdf5)_systemF
+#
+# Japanese
+export/examples/ja/Modules/Linguistics.*systemF
+#
+# Arabic (see also "texissues")
+# "! Extra \else" and missing glyph "no ␣ in font Scheherazade":
+# (the lyx2lyx test also tests compilation after round-trip)
+export/doc/ar/UserGuide_pdf4_systemF
+export/doc/ar/UserGuide_lyx(22|23)
+
+
+# ==============================================================
+Sublabel: ert
+# Export failures due to "raw" LaTeX use in ERT or preamble code
+# ==============================================================
+#
+# "Wontfix" if demonstrating correct use and OK in the default output format.
+
+
+# ================================================
+Sublabel: texissues
+# Export fails due to LaTeX limitations,
+# ================================================
+#
+# e.g. non-ASCII in verbatim or listings, incompatible packages, ...
+# "Wontfix" if documents demonstrate correct use in the default output format.
+
+# Compilation error with Chech or Slovak text i a table cell.
+# All exports using babel fail (problem in Czech and Slovak Babel support,
+# reported per mail to Petr Tesa\v{r}\'ik, 2016-09-06)
+# Without the Czech or Slovak text it compiles.
+# No problem with inserted German (or other foreign language) text.
+# No problem if the complete table is Slovak, too.
+export/export/latex/languages/en-sk-cz-babel-table-error_(dvi|pdf[23]?|.*_texF)
+
+
+# Xe/LuaTeX
+###########
+
+# Babel-Russian uses UTF-8 for auto-strings if it detects Xe/LuaTeX.
+# This fails unless the inputencoding is set to utf-8, too.
+export/export/latex/languages/ru_auto-legacy-luatex.*_texF
+
+# Babel-Ukrainian uses UTF-8 if it detects Xe/LuaTeX (for "\date").
+# With 8-bit TeX fonts this results in:
+# * garbled output with PDF (LuaTeX)
+# * missing glyphs with XeTeX and DVI (LuaTeX)
+# New in TL18 -> cf. unreliableTests.varying_versions.
+# Workaround: suppressing auto-date, setting inputenc to "utf8", or using
+#             date inset (new in LyX 2.4) in the source documents.
+export/export/latex/languages/uk-babel-date-missing-chars-with-ascii_dvi3_texF
+
+# Babel with non-TeX fonts fails for some supported languages
+# Lithuanian: L7x font encoding also set with LuaTeX and non-TeX fonts
+# (error but output OK)
+export/export/latex/languages/supported-languages_babel_non-tex_(dvi3|pdf5)_systemF
+
+# Babel-French fails with Xe/LuaTeX and TeX fonts
+#   LaTeX Error: Command \at already defined. (and a lot more)
+export/export/latex/languages/supported-languages_(dvi|pdf).*_texF
+export/export/latex/languages/supported-languages_babel_(dvi|pdf).*_texF
+
+# Polyglossia + LuaTeX issue
+# Reported upstream here:
+# https://github.com/reutenauer/polyglossia/issues/163
+# These tests were broken at 3374b854
+# See discussion here:
+# https://www.mail-archive.com/search?l=mid&q=1478004223.2367.5.camel%40lyx.org
+export/doc/(sk|nb)/Intro_(dvi3|pdf5)_systemF
+# some Polyglossia languages work only with XeTeX and fail with LuaTeX:
+# * The font "NotoSansEthiopic" cannot be found.
+# * sanskrit: ! Undefined control sequence.
+#             l.53 \newXeTeXintercharclass
+# * RTL-languages: ! Undefined control sequence.
+#             \setLR ->\@RTLfalse \luatexpardir
+export/export/latex/languages/supported-languages_polyglossia_(dvi3|pdf5)_systemF
+
+# Systemcall: 'lualatex "supported-languages.tex"' finished with exit code 1
+# but no error in log and PDF is fine
+export/export/latex/languages/supported-languages_luatex_(dvi3|pdf5)_systemF
+
+
+# Some packages fail with XeTeX/LuaTeX
+# Reported upstream (https://www.mail-archive.com/lyx-devel@lists.lyx.org/msg184435.html)
+# Is there a new version fixing the problem?
+export/examples/Articles/Astronomy_%26_Astrophysics_(dvi3|pdf[45])_.*
+export/templates/Articles/Astronomy_%26_Astrophysics_(dvi3|pdf[45])_.*
+
+# Gives the following error:
+# # ! Package hpstatement Error: H or P statement "H251"
+# # (hpstatement)                is not defined.
+# seems to be polyglossia-related (dvi3 worked with babel)
+export/examples/Modules/Hazard_and_Precautionary_Statements_.*_systemF
+
+# These files use packages that are not compatible with the newest LuaTeX. We
+# could potentially fix these by loading the luatex85 package early in the
+# LyX-generated preamble, but it seems it's better to wait until the packages
+# fix the root issue themselves.
+# xy package:
+export/examples/(|fr/)Graphics_and_Insets/XY-(Pic|Figure)_pdf5.*
+
+# fontspec errors with `slides` class:
+# LaTeX error: "kernel/command-already-defined"
+# Lines 2684 ... 2690 in fontspec-xetex.sty
+# Lines 2608 ... 2614 in fontspec-luatex.sty
+export/templates/Presentations/Slides_.*_systemF
+
+# expl3.sty: Compilation errors with XeTeX, TeX-fonts, inputenc utf8
+# (TL 17 works).
+export/export/latex/inputenc-xetex-utf8-expl3-bug_pdf4_texF
+
+# Korean with LuaTeX:
+# Language korean not found in language.dat.lua
+export/examples/ko/Welcome_(dvi3|pdf5)_systemF
+export/export/latex/CJK/en-de-el-ru-ko_utf8_(dvi3|pdf5)_systemF
+
+# Arabic
+#
+# Larger Arabic documents currently have non-TeX fonts and XeTeX
+# as default output. To fix pdfTeX export:
+# - set all non-Arab text parts to a different language (e.g. English)
+# - define alternatives for hyperref (e.g. with textorpdfstring)
+#   for correct handling of hyperref.
+# - solve problem with ToC:
+#      ! This can't happen (copying).
+#      \AtBegShi@Output ...ipout \box \AtBeginShipoutBox
+#                                                        \fi \fi
+#      l.62 \tableofcontents
+#                           {}
+#      I'm broken. Please show this to someone who can fix
+# see discussion at https://www.mail-archive.com/search?l=mid&q=20161114035123.s5lt4ib4x4obtptp%40steph
+
+# Babel-Arabic loads "inputenc" which fails with LuaTeX
+export/.*/ar/.*_(dvi3|pdf5)_texF
+# no Arab charaters with luainputenc
+export/export/latex/languages/supported-languages_(dvi3|pdf5)_texF
+export/export/latex/languages/supported-languages_babel_auto-legacy_(dvi3|pdf5)_texF
+
+
+# Farsi
+# "invalid utf-8 sequence" with Babel-Farsi, LuaTeX, and TeX fonts.
+# (XeTeX works, if inputenc is set to "utf8")
+export/examples/fa/Welcome_(dvi3|pdf5)_texF
+
+# Hebrew
+# babel-hebrew loads "rlbabel.def" which fails with LuaTeX + TeX fonts:
+# "! Right-to-Left Support Error: use TeX--XeT or e-TeX engine."
+# (XeTeX works, if inputenc is set to "utf8")
+export/.*/he/.*(dvi3|pdf5)_texF
+export/export/latex/languages/he-.*(dvi3|pdf5)_texF
+export/export/latex/languages/supported-languages_(dvi3|pdf5)_texF
+export/export/latex/languages/supported-languages_babel_(dvi3|pdf5)_texF
+
+# Polyglossia bug with LuaTeX and LTR languages (Arab, Hebrew and Farsi):
+# Undefined control sequences "\luatexpardir" and "\luatextextdir".
+# https://github.com/reutenauer/polyglossia/commit/ccb0e9e2c6411170ad779b05ff5076f1193cc323
+export/.*/ar/.*(dvi3|pdf5)_systemF
+export/.*/fa/Welcome_(dvi3|pdf5)_systemF
+# terminal message: "Language hebrew not found in language.dat.lua"
+export/.*/he/.*(dvi3|pdf5)_systemF
+export/export/latex/languages/supported-languages_(dvi3|pdf5)_systemF
+
+# Ukrainian
+# See comment in unreliableTests
+export/export/latex/languages/uk-babel-date-missing-chars-with-ascii_pdf5_texF
+
+
+# ================================================
+Sublabel: externalissues
+# Export fails due to non-LaTeX external tool,
+# ================================================
+#
+# e.g. a bug or missing feature in ps2pdf
+
+# ps2pdf gives the following and exits with error:
+# Error: /invalidfileaccess in --file--
+# ps2pdf succeeds if the -dNOSAFER flag is used. For discussion, see:
+# https://www.mail-archive.com/search?l=mid&q=1506851183.3130.15.camel%40lyx.org
+export/examples/ja/Modules/LilyPond_Book_pdf
+
+
+# ======================================================================
+Sublabel: attic
+# Documents in the attic, kept for reference and format conversion test.
+# However, many problems here are "wontfix".
+# ======================================================================
+
+# Fails because of missing .png graphic files.
+# They were replaced by .svgz, but, as this file is in the attic, we do not
+# convert to new lyx format. Plain latex and xetex create output (ignoring
+# missing files) while (pdf|lua)latex exits with != 0
+#export/doc/attic/eu_UserGuide_pdf[25].*
+
+# Files in the attic with non-default output
+# (i.e. could be ERT, package incompatiblity, ...)
+export/doc/attic/it_(UserGuide_dvi3|UserGuide_pdf4)_systemF
+export/doc/attic/id_UserGuide_.*systemF

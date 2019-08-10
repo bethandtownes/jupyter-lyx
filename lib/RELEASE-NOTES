@@ -1,0 +1,141 @@
+!Important Changes in LyX 2.4.0
+
+
+!!Interface changes
+
+* It is now possible to cancel background export processes. A menu entry
+  to do so will appear on the Document menu when such a process is underway.
+  The LFUN for this is export-cancel. One can also click on the 'spinner'
+  to cancel export.
+
+* The items on the Edit menu have been reordered, and many of the shortcuts
+  have been changed so that they are more intuitive in the case of often
+  used items. We understand that this may frustrate some users and apologize,
+  while noting that menu shortcuts can always be customized by copying the
+  stdmenus.inc file to the user directory and editing it.
+
+
+!!Documents compilation process and images conversion
+
+* LyX now uses utf8 encoding per default for all languages. This does not affect
+  existing documents. Note that LyX also does not touch personal defaults and templates.
+  That is to say, if you still see traditional encoding preset for new documents,
+  you can change that by selecting "Unicode (utf8) [default]" and hitting "Save
+  as Documents Defaults" afterwards. Your personal templates need to be changed manually
+  if desired.
+
+* LyX defaults to the "HE8" LaTeX font encoding with Hebrew if the
+  "Culmus" LaTeX fonts are installed.
+
+* Documents that use TeX fonts can only be compiled with XeTeX if the input
+  encoding is set to "utf8-plain" or "ascii".
+
+!!!The following pref variables were added in 2.4:
+
+
+
+!!!The following pref variables were changed in 2.4:
+
+
+
+!!!The following pref variables are obsoleted in 2.4:
+
+* \font_encoding
+  The font encoding is now automatically set depending on the document
+  fonts and languages.
+
+* \use_qimage
+  This is no longer necessary due to the rewrite of the painter.
+
+* \use_pixmap_cacheqimage
+  There is no evidence that this painting mode was useful anymore.
+
+* \date_insert_format
+  The function date-insert has been removed and superseded by info-insert date.
+  The latter does not need a pref value anymore.
+
+
+!!!The following new LyX functions have been introduced in 2.4:
+
+* paragraph-select is a new convenience function to select the paragraph
+  surrounding the actual cursor position.
+
+* buffer-write-as-template is a new convenience function to ease saving a document
+  in the (personal) templates folder.
+
+* export-cancel: Used to cancel background export processes.
+
+* tabular-style-insert: Insert a table in a specified style.
+
+
+!!!The following LyX functions have been changed in 2.4:
+
+* set-graphics-group was renamed to graphics-set-group.
+
+* info-insert buffer vcs-*: renamed to info-insert vcs *
+
+* file-insert: optional second parameter "ignorelang" to make the insertion
+  ignore the inserted file's main language (and rather adapt it to the insertion
+  context's language).
+
+
+!!!The following LyX functions have been removed in 2.4:
+
+* date-insert: obsoleted by info-insert date.
+
+
+
+!!!The following LyX documents have been moved in 2.4:
+
+* As a result of a major restructuring of the templates and example
+  directories, almost all examples and templates files have been renamed and
+  moved to subfolders that reflect the layout category.
+  The files now have much more decriptive (and longer) names, and they use
+  URL encoding for specific special characters such as '(', ')' and '&'.
+  Notably also the file that opens for new users has been renamed (from
+  splash.lyx to Welcome.lyx).
+
+
+!!!The following new folders have been added to the LyX directory
+
+* The examples and templates directories have been completely re-organized.
+  They are now much more structured (by means of layout categories) and thus
+  consist of many new subfolders. 
+
+
+
+!!!The following preferences files have been removed from the tarball in 2.4:
+
+
+
+!!!The following metadata files have been added to the tarball in 2.4:
+
+
+
+!!Changes with respect to external programs and libraries in 2.4:
+
+* The Qt5 libraries are now used by default. In order to link against
+  Qt4 the configure option --disable-qt5 has to be used.
+
+
+
+!!Known issues in version 2.4.0
+
+* See http://www.lyx.org/trac/wiki/BugTrackerHome
+
+
+!!Caveats when upgrading from earlier versions to 2.4.x
+
+* Autotools monolithic build option for building LyX binaries was removed,
+  for compilation speedup use parallel building on multiple cores instead.
+
+!! If upgrading from a LyX version before 2.3.0
+
+* Please additionally see the release notes from the versions in-between:
+  https://wiki.lyx.org/LyX/ReleaseNotes
+
+* Several ttf fonts (esint10.ttf, stmary10.ttf, wasy10.ttf) were changed
+  to reflect the fact that newer Qt libraries do not support displaying certain
+  codepoints anymore (bug #8493, #10161). 
+  Distribution packagers need to repack those font files in case they are
+  delivering the fonts as a separated package dependent from core LyX.

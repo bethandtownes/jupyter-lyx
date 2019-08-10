@@ -1,0 +1,297 @@
+#LyX 2.4 created this file. For more info see https://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass scrartcl
+\use_default_options false
+\begin_modules
+logicalmkup
+\end_modules
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "NotoSerif-TLF" "default"
+\font_sans "NotoSans-TLF" "default"
+\font_typewriter "NotoMono-TLF" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures false
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize 12
+\spacing single
+\use_hyperref true
+\pdf_bookmarks false
+\pdf_bookmarksnumbered true
+\pdf_bookmarksopen false
+\pdf_bookmarksopenlevel 1
+\pdf_breaklinks false
+\pdf_pdfborder false
+\pdf_colorlinks true
+\pdf_backref false
+\pdf_pdfusetitle false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 0
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 0
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 2
+\paragraph_separation skip
+\defskip medskip
+\is_math_indent 1
+\math_indentation 3em
+\math_numbering_side right
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 2
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Subsection*
+Test reversion/conversion between 2.3 and 2.2 formats with lyx2lyx.
+\end_layout
+
+\begin_layout Standard
+Part 1: Fonts: NoTo
+\end_layout
+
+\begin_layout Description
+baselineskip%: Box and rule with dimensions set to baselineskip% 
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 1
+use_makebox 0
+width "250baselineskip%"
+special "none"
+height "50baselineskip%"
+height_special "none"
+thickness "4baselineskip%"
+separation "9baselineskip%"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status open
+
+\begin_layout Plain Layout
+test
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset CommandInset line
+LatexCommand rule
+offset "40baselineskip%"
+width "800baselineskip%"
+height "5.3baselineskip%"
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset VSpace 200baselineskip%
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Vertical space above this paragraph is 2·baselineskip.
+\end_layout
+
+\begin_layout Standard
+\begin_inset space \hspace*{}
+\length 75.2baselineskip%
+\end_inset
+
+Paragraph with
+\begin_inset space \hspace{}
+\length 135baselineskip%
+\end_inset
+
+horizontal space insets using baselineskip.
+\end_layout
+
+\end_deeper
+\begin_layout Description
+rotated
+\begin_inset space ~
+\end_inset
+
+floats: (sideways environment)
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+sideways true at the beginning of a line must not confuse conversion
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement !ph
+wide false
+sideways true
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+[figure 1 stub]
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+rotated float 1
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Description
+rotated
+\begin_inset space ~
+\end_inset
+
+float insets can be defined in a list: 
+\begin_inset Float figure
+placement !ph
+wide false
+sideways true
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+[figure 2 stub]
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+rotated float 2
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Description
+new
+\begin_inset space ~
+\end_inset
+
+Babel
+\begin_inset space ~
+\end_inset
+
+languages: text parts in 
+\lang bosnian
+Bosnian
+\lang english
+, 
+\lang friulan
+Friulian
+\lang english
+, 
+\lang macedonian
+Macedonian
+\lang english
+, 
+\lang piedmontese
+Piedmontese
+\lang english
+, 
+\lang romansh
+Romansh
+\lang english
+.
+\end_layout
+
+\begin_layout Description
+Indent
+\begin_inset space ~
+\end_inset
+
+Formulas/formula
+\begin_inset space ~
+\end_inset
+
+numbering: 3em/right
+\begin_inset Formula 
+\begin{equation}
+y=x^{2}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
